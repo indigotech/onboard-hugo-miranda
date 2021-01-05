@@ -6,9 +6,13 @@
   "author": "hugo miranda <hugo.miranda.souza@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "start": "node ./src/server.js"
+    "start": "yarn tsc && node ./build/server.js"
   },
   "dependencies": {
+    "apollo-server": "^2.19.1",
     "graphql": "^15.4.0"
+  },
+  "devDependencies": {
+    "typescript": "^4.1.3"
   }
 }
