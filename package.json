@@ -1,0 +1,14 @@
+{
+  "name": "onboard-hugo-miranda",
+  "version": "1.0.0",
+  "main": "src/server.js",
+  "repository": "https://github.com/indigotech/onboard-hugo-miranda.git",
+  "author": "hugo miranda <hugo.miranda.souza@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "start": "node ./src/server.js"
+  },
+  "dependencies": {
+    "graphql": "^15.4.0"
+  }
+}
