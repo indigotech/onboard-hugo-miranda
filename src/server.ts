@@ -21,6 +21,6 @@ server
   .then(({ url }) => {
     console.log(`server is running on ${url}`);
   })
-  .catch(() => {
-    console.log(`Something went wrong.`);
+  .catch(({ message }) => {
+    console.log(`Something went wrong.\n${message as string}`);
   });
