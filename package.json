@@ -8,7 +8,8 @@
   "scripts": {
     "build": "rm -rf build/ && yarn tsc",
     "start": "node ./build/server.js",
-    "build-start": "yarn build && yarn start"
+    "build-start": "yarn build && yarn start",
+    "eslint:verify": "yarn eslint ./src/**"
   },
   "dependencies": {
     "apollo-server": "2.19.1",
