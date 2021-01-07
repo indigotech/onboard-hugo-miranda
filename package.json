@@ -8,8 +8,8 @@
    "scripts": {
       "build": "rm -rf build/ && yarn tsc",
       "start": "ts-node src/server.ts",
-      "build-start": "yarn build && yarn start",
-      "typeorm": "ts-node ./node_modules/typeorm/cli.js"
+      "typeorm": "ts-node ./node_modules/typeorm/cli.js",
+      "eslint:verify": "yarn eslint ./src/**"
    },
    "dependencies": {
       "apollo-server": "2.19.1",

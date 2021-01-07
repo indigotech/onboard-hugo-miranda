@@ -23,6 +23,6 @@ server
   .then(({ url }) => {
     console.log(`server is running on ${url}`);
   })
-  .catch(({ message }) => {
-    console.log(`Something went wrong.\n${message as string}`);
+  .catch((error) => {
+    console.log(`Something went wrong.\n${error.message}`);
   });
