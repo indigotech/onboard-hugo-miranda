@@ -8,13 +8,21 @@
   "scripts": {
     "build": "rm -rf build/ && yarn tsc",
     "start": "node ./build/server.js",
-    "build-start": "yarn build && yarn start"
+    "build-start": "yarn build && yarn start",
+    "eslint:verify": "yarn eslint ./src/**"
   },
   "dependencies": {
     "apollo-server": "2.19.1",
     "graphql": "15.4.0"
   },
   "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "4.12.0",
+    "@typescript-eslint/parser": "4.12.0",
+    "eslint": "7.17.0",
+    "eslint-config-prettier": "7.1.0",
+    "eslint-plugin-prettier": "3.3.1",
+    "prettier": "2.2.1",
+    "prettier-eslint": "12.0.0",
     "typescript": "4.1.3"
   }
 }
