@@ -24,7 +24,7 @@ Clone the repository on your machine
 git clone https://github.com/indigotech/onboard-hugo-miranda.git
 ```
 
-Then, install the project dependencies by running `yarn install` or `npm install` in terminal.
+Then, install the project dependencies by running `yarn install` in terminal.
 
 That done, you can run the following commands in the project:
 
