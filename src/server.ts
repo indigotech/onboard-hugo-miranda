@@ -1,17 +1,9 @@
 import 'reflect-metadata';
 import './typeorm';
 import { ApolloServer, gql } from 'apollo-server';
-
-const fakeUsers = [
-  {
-    id: '1',
-    name: 'username',
-    email: 'email@mail.com',
-    password: 'password',
-    birthDate: '04/01/2001',
-    cpf: '12345678901',
-  },
-];
+import { getRepository } from 'typeorm';
+import { compare } from 'bcryptjs';
+import User from './typeorm/entities/User';
 
 const typeDefs = gql`
   type User {
@@ -51,16 +43,19 @@ const resolvers = {
   },
 
   Mutation: {
-    login: (_, { login }) => {
+    login: async (_, { login }) => {
       const { email, password } = login;
+      const usersRepository = getRepository(User);
 
       if (!email || !password) {
         throw new Error('Unauthorized. Possible invalid credentials.');
       }
 
-      const user = fakeUsers.filter((user) => user.email === email && user.password === password)[0];
+      const user = await usersRepository.findOne({ where: { email } });
 
-      if (!user) {
+      const passswordMatch = await compare(password, user.password);
+
+      if (!user || !passswordMatch) {
         throw new Error('Unauthorized. Possible invalid credentials.');
       }
 

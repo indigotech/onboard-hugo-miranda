@@ -27,7 +27,7 @@ export default class AddUserTable1610134269562 implements MigrationInterface {
             type: 'varchar',
           },
           {
-            name: 'birthdate',
+            name: 'birthDate',
             type: 'varchar',
           },
           {
