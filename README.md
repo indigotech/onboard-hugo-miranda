@@ -6,6 +6,7 @@ This project is a CRUD of a User's Entity. Developed during onboarding at Taqtil
 
 ## Environment and tools
 
+- Node v12.18.3
 - Typescript
 - ESLint
 - Prettier
