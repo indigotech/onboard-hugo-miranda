@@ -1,6 +1,7 @@
 import { createConnection } from 'typeorm';
+import { DatabaseConfig } from '../config/database';
 
-createConnection()
+createConnection(DatabaseConfig)
   .then(() => console.log(`Database connection was successful!`))
   .catch((error) => {
     console.log(`Something went wrong with database connection

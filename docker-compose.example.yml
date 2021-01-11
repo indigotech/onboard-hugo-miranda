@@ -16,6 +16,6 @@ testdb:
   volumes:
     - ./db/dumps:/app-db-dumps
   environment:
-    - POSTGRES_USER=username
-    - POSTGRES_PASSWORD=password
+    - POSTGRES_USER=postgres
+    - POSTGRES_PASSWORD=postgres
     - POSTGRES_DB=database_tests
