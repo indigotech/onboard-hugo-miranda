@@ -58,15 +58,13 @@ const resolvers = {
         throw new Error('Unauthorized. Possible invalid credentials.');
       }
 
-      let user = fakeUsers.filter((user) => user.email === email && user.password === password)[0];
+      const user = fakeUsers.filter((user) => user.email === email && user.password === password)[0];
 
       if (!user) {
         throw new Error('Unauthorized. Possible invalid credentials.');
       }
 
       const token = 'Token';
-
-      user = Object.assign(user, { password: undefined });
 
       return { user, token };
     },
