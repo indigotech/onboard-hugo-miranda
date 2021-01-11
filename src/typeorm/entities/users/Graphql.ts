@@ -2,6 +2,7 @@ import { gql } from 'apollo-server';
 import HashProvider from './providers/HashProvider/implementations/HashProvider';
 import { getRepository } from 'typeorm';
 import User from './User';
+import JWTProvider from './providers/JWTProvider/implementations/JWTProvider';
 
 export const userTypeDefs = gql`
   type User {
@@ -45,6 +46,7 @@ export const userResolvers = {
   Mutation: {
     login: async (_, { login }: UserLoginParams): Promise<UserLoginResponse> => {
       const hashProvider = new HashProvider();
+      const jwtProvider = new JWTProvider();
       const { email, password } = login;
       const usersRepository = getRepository(User);
 
@@ -60,7 +62,7 @@ export const userResolvers = {
         throw new Error('Unauthorized. Possible invalid credentials.');
       }
 
-      const token = 'Token';
+      const token = jwtProvider.sign(user);
 
       return { user, token };
     },
