@@ -55,16 +55,21 @@ const resolvers = {
     login: (_, { login }) => {
       const { email, password } = login;
 
-      const user = fakeUsers.filter((user) => user.email === email && user.password === password)[0];
-      const token = 'Token';
+      if (!email || !password) {
+        throw new Error('Unauthorized. Possible invalid credentials.');
+      }
+
+      let user = fakeUsers.filter((user) => user.email === email && user.password === password)[0];
 
       if (!user) {
         throw new Error('Unauthorized. Possible invalid credentials.');
       }
 
-      const response = { user, token };
+      const token = 'Token';
 
-      return response;
+      user = Object.assign(user, { password: undefined });
+
+      return { user, token };
     },
   },
 };
