@@ -1,5 +1,5 @@
 import { gql } from 'apollo-server';
-import { compare } from 'bcryptjs';
+import HashProvider from './providers/HashProvider/implementations/HashProvider';
 import { getRepository } from 'typeorm';
 import User from './User';
 
@@ -44,6 +44,7 @@ interface UserLoginResponse {
 export const userResolvers = {
   Mutation: {
     login: async (_, { login }: UserLoginParams): Promise<UserLoginResponse> => {
+      const hashProvider = new HashProvider();
       const { email, password } = login;
       const usersRepository = getRepository(User);
 
@@ -53,7 +54,7 @@ export const userResolvers = {
 
       const user = await usersRepository.findOne({ email });
 
-      const passswordMatch = await compare(password, user.password);
+      const passswordMatch = await hashProvider.verify(password, user.password);
 
       if (!user || !passswordMatch) {
         throw new Error('Unauthorized. Possible invalid credentials.');
