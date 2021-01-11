@@ -8,7 +8,8 @@
    "scripts": {
       "build": "rm -rf build/ && yarn tsc",
       "start": "ts-node src/server.ts",
-      "dev": "nodemon -w src --ext ts --exec ts-node src/server.ts",
+      "test": "ENV=TEST ts-node src/server.ts",
+      "dev": "ENV=DEV nodemon -w src --ext ts --exec ts-node src/server.ts",
       "typeorm": "ts-node ./node_modules/typeorm/cli.js",
       "eslint:verify": "yarn eslint ./src/**"
    },

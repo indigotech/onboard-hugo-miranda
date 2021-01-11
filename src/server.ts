@@ -1,5 +1,7 @@
+import './config/env';
 import 'reflect-metadata';
 import './typeorm';
+import './config/env';
 import { ApolloServer, gql } from 'apollo-server';
 import { getRepository } from 'typeorm';
 import { compare } from 'bcryptjs';
