@@ -6,3 +6,4 @@ tmp/
 temp/
 ormconfig.json
 docker-compose.yml
+.env
