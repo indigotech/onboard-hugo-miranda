@@ -8,7 +8,7 @@ const fakeUsers = [
     name: 'username',
     email: 'email@mail.com',
     password: 'password',
-    birthdate: '04/01/2001',
+    birthDate: '04/01/2001',
     cpf: '12345678901',
   },
 ];
@@ -18,7 +18,7 @@ const typeDefs = gql`
     id: String!
     name: String!
     email: String!
-    birthdate: String!
+    birthDate: String!
     cpf: String!
   }
 
