@@ -15,12 +15,12 @@ const fakeUsers = [
 
 const typeDefs = gql`
   type User {
-    id: String
-    name: String
-    email: String
+    id: String!
+    name: String!
+    email: String!
     password: String
-    birthdate: String
-    cpf: String
+    birthdate: String!
+    cpf: String!
   }
 
   type LoginResponse {
@@ -33,7 +33,7 @@ const typeDefs = gql`
   }
 
   type Mutation {
-    login(login: LoginInput): LoginResponse!
+    login(login: LoginInput!): LoginResponse!
   }
 
   input LoginInput {
