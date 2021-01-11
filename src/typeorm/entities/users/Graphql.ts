@@ -1,7 +1,7 @@
 import { gql } from 'apollo-server';
 import HashProvider from './providers/HashProvider/implementations/HashProvider';
 import { getRepository } from 'typeorm';
-import User from './User';
+import User from './User-entity';
 import JWTProvider from './providers/JWTProvider/implementations/JWTProvider';
 
 export const userTypeDefs = gql`

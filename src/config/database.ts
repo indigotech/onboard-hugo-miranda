@@ -5,4 +5,6 @@ export const DatabaseConfig: PostgresConnectionOptions = {
   type: 'postgres',
   url: process.env.DATABASE_URL,
   port: Number(process.env.DATABASE_PORT),
+  entities: ['./src/typeorm/entities/*/*-entity.ts'],
+  migrations: ['./src/typeorm/migrations/*.ts'],
 };
