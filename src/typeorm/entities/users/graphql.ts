@@ -1,10 +1,10 @@
 import { gql } from 'apollo-server';
 import { getRepository } from 'typeorm';
-import User from './User-entity';
+import User from './user-entity';
 import JWTProvider from './providers/jwt-provider/jwt-provider';
 import HashProvider from './providers/hash-provider/hash-provider';
 
-export const userTypeDefs = gql`
+export const UserTypeDefs = gql`
   type User {
     id: String!
     name: String!
@@ -42,7 +42,7 @@ interface UserLoginResponse {
   user: User;
 }
 
-export const userResolvers = {
+export const UserResolvers = {
   Mutation: {
     login: async (_, { login }: UserLoginParams): Promise<UserLoginResponse> => {
       const hashProvider = new HashProvider();

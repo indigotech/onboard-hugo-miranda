@@ -2,7 +2,7 @@ import './config/env';
 import 'reflect-metadata';
 import './typeorm';
 import { ApolloServer, gql } from 'apollo-server';
-import { userResolvers, userTypeDefs } from './typeorm/entities/users/Graphql';
+import { UserResolvers, UserTypeDefs } from './typeorm/entities/users/graphql';
 
 const helloTypeDefs = gql`
   type Query {
@@ -18,9 +18,9 @@ const helloResolvers = {
   },
 };
 
-const typeDefs = [helloTypeDefs, userTypeDefs];
+const typeDefs = [helloTypeDefs, UserTypeDefs];
 
-const resolvers = [helloResolvers, userResolvers];
+const resolvers = [helloResolvers, UserResolvers];
 
 const server = new ApolloServer({ typeDefs, resolvers });
 
