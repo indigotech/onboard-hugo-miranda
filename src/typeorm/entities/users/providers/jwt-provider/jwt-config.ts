@@ -9,7 +9,7 @@ interface JWTConfig {
   };
 }
 
-const JWTConfig: JWTConfig = {
+export const JWTConfig: JWTConfig = {
   salt: process.env.JWT_SALT,
   signOptions: {
     expiresIn: process.env.JWT_EXPIRES_IN,
@@ -20,5 +20,3 @@ const JWTConfig: JWTConfig = {
     publicKey: process.env.JWT_PUBLIC_KEY,
   },
 };
-
-export default JWTConfig;
