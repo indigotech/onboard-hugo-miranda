@@ -1,8 +1,8 @@
 import jwt from 'jsonwebtoken';
-import IJWTProvider from './i-jwt-provider';
+import { IJWTProvider } from './i-jwt-provider';
 import { JWTConfig } from './jwt-config';
 
-export default class JWTProvider implements IJWTProvider {
+export class JWTProvider implements IJWTProvider {
   sign(payload: string | Buffer | unknown): string {
     return jwt.sign({ payload }, JWTConfig.jwt.privateKey, JWTConfig.signOptions);
   }
