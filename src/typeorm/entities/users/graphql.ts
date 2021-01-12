@@ -16,6 +16,8 @@ export const UserTypeDefs = gql`
   type LoginResponse {
     user: User!
     token: String!
+    "If this option is set as TRUE, than you will have a long time until the token expires"
+    rememberMe: Boolean!
   }
 
   type Mutation {
@@ -23,10 +25,10 @@ export const UserTypeDefs = gql`
   }
 
   input LoginInput {
-    "User email"
     email: String!
-    "User password"
     password: String!
+    "If this option is set as TRUE, than you will have a long time until the token expires"
+    rememberMe: Boolean
   }
 `;
 
@@ -34,12 +36,14 @@ interface UserLoginParams {
   input: {
     email: string;
     password: string;
+    rememberMe: boolean;
   };
 }
 
 interface UserLoginResponse {
   token: string;
   user: User;
+  rememberMe: boolean;
 }
 
 export const UserResolvers = {
@@ -47,7 +51,7 @@ export const UserResolvers = {
     login: async (_, { input }: UserLoginParams): Promise<UserLoginResponse> => {
       const hashProvider = new HashProvider();
       const jwtProvider = new JWTProvider();
-      const { email, password } = input;
+      const { email, password, rememberMe = false } = input;
       const usersRepository = getRepository(User);
 
       if (!email || !password) {
@@ -62,9 +66,9 @@ export const UserResolvers = {
         throw new Error('Unauthorized. Possible invalid credentials.');
       }
 
-      const token = jwtProvider.sign(user);
+      const token = jwtProvider.sign({ payload: user, rememberMe });
 
-      return { user, token };
+      return { user, token, rememberMe };
     },
   },
 };
