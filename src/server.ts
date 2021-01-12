@@ -1,4 +1,4 @@
-import './config/env';
+import '@config/env';
 import 'reflect-metadata';
 import './typeorm';
 import { ApolloServer, gql } from 'apollo-server';
