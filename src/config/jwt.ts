@@ -10,9 +10,9 @@ interface JWTConfig {
 }
 
 const JWTConfig: JWTConfig = {
-  salt: '10',
+  salt: process.env.JWT_SALT,
   signOptions: {
-    expiresIn: 15,
+    expiresIn: process.env.JWT_EXPIRES_IN,
     algorithm: 'RS256',
   },
   jwt: {
