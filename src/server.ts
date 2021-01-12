@@ -51,7 +51,7 @@ const resolvers = {
         throw new Error('Unauthorized. Possible invalid credentials.');
       }
 
-      const user = await usersRepository.findOne({ where: { email } });
+      const user = await usersRepository.findOne({ email });
 
       const passswordMatch = await compare(password, user.password);
 
