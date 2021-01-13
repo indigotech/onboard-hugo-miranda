@@ -19,7 +19,7 @@ export const UserTypeDefs = gql`
   }
 
   type Mutation {
-    login(login: LoginInput!): LoginResponse!
+    login(input: LoginInput!): LoginResponse!
   }
 
   input LoginInput {
@@ -31,7 +31,7 @@ export const UserTypeDefs = gql`
 `;
 
 interface UserLoginParams {
-  login: {
+  input: {
     email: string;
     password: string;
   };
@@ -44,10 +44,10 @@ interface UserLoginResponse {
 
 export const UserResolvers = {
   Mutation: {
-    login: async (_, { login }: UserLoginParams): Promise<UserLoginResponse> => {
+    login: async (_, { input }: UserLoginParams): Promise<UserLoginResponse> => {
       const hashProvider = new HashProvider();
       const jwtProvider = new JWTProvider();
-      const { email, password } = login;
+      const { email, password } = input;
       const usersRepository = getRepository(User);
 
       if (!email || !password) {
