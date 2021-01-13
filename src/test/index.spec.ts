@@ -1,11 +1,23 @@
 import '@config/env';
-import { expect } from 'chai';
 import { describe, it } from 'mocha';
+import { runServer } from 'src/server';
+import supertest from 'supertest';
 
-describe('Testing Mocha', () => {
-  it('Should perform a successful test', () => {
-    const message = 'Running test';
+let baseURL: string;
 
-    expect(message).to.be.a('string');
+before(async () => {
+  await runServer();
+  baseURL = 'http://localhost:4000/graphql';
+});
+
+describe('Testing GraphQL - Hello', () => {
+  it('Should perform a successful request to Graphql endpoint - Hello', async () => {
+    const request = {
+      query: `{ hello }`,
+    };
+
+    const { body } = await supertest(baseURL).post('').send(request);
+
+    console.log(body);
   });
 });
