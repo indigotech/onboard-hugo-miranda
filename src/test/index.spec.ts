@@ -25,7 +25,6 @@ describe('Testing GraphQL - Hello', () => {
     const request = {
       query: `{ hello }`,
     };
-    console.log(baseURL);
 
     const {
       body: { data },
