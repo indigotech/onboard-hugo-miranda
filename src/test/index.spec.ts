@@ -7,7 +7,7 @@ let baseURL: string;
 
 before(async () => {
   await runServer();
-  baseURL = 'http://localhost:4000/graphql';
+  baseURL = `http://localhost:${process.env.SERVER_PORT}/graphql`;
 });
 
 describe('Testing GraphQL - Hello', () => {

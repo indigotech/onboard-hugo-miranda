@@ -29,7 +29,7 @@ export async function runServer(): Promise<void> {
   const server = new ApolloServer({ typeDefs, resolvers });
 
   try {
-    const { url } = await server.listen();
+    const { url } = await server.listen({ port: process.env.SERVER_PORT });
     console.log(`server is running on ${url}`);
   } catch (error) {
     console.log(`Something went wrong.\n${error.message}`);
