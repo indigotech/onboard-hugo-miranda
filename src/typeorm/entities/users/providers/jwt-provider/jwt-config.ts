@@ -1,18 +1,21 @@
 import { Secret, SignOptions } from 'jsonwebtoken';
 
-interface JWTConfig {
+interface IJWTConfig {
   salt: Secret;
   signOptions: SignOptions;
+  expiresIn: string;
+  rememberedExpiresIn: string;
   jwt: {
     privateKey: string;
     publicKey: string;
   };
 }
 
-export const JWTConfig: JWTConfig = {
+export const JWTConfig: IJWTConfig = {
   salt: process.env.JWT_SALT,
+  expiresIn: process.env.JWT_EXPIRES_IN,
+  rememberedExpiresIn: process.env.JWT_REMEMBERED_EXPIRES_IN,
   signOptions: {
-    expiresIn: process.env.JWT_EXPIRES_IN,
     algorithm: 'RS256',
   },
   jwt: {
