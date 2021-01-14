@@ -1,4 +1,5 @@
 import '@config/env';
+import { expect } from 'chai';
 import { describe, it } from 'mocha';
 import { runServer } from 'src/server';
 import supertest from 'supertest';
@@ -16,8 +17,10 @@ describe('Testing GraphQL - Hello', () => {
       query: `{ hello }`,
     };
 
-    const { body } = await supertest(baseURL).post('').send(request);
+    const {
+      body: { data },
+    } = await supertest(baseURL).post('').send(request);
 
-    console.log(body);
+    expect(data.hello).to.be.eq('hello, world!');
   });
 });
