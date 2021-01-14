@@ -12,11 +12,15 @@ let baseURL: string;
 let usersRepository: Repository<User>;
 let hashProvider: HashProvider;
 let jwtProvider: JWTProvider;
+
 before(async () => {
   await runServer();
+
   usersRepository = getRepository(User);
+
   hashProvider = new HashProvider();
   jwtProvider = new JWTProvider();
+
   baseURL = `http://localhost:${process.env.SERVER_PORT}/graphql`;
 });
 
@@ -30,7 +34,7 @@ describe('Testing GraphQL - Hello', () => {
       body: { data },
     } = await supertest(baseURL).post('').send(request);
 
-    expect(data.hello).to.be.eq('hello, world!');
+    expect(data.hello).to.be.eql('hello, world!');
   });
 });
 
@@ -66,7 +70,6 @@ describe('E2E GraphQL - Mutation - User', () => {
             cpf
           }
           token
-
         }
       }`,
       variables: {
@@ -90,14 +93,14 @@ describe('E2E GraphQL - Mutation - User', () => {
     }
 
     expect(response)
-      .to.has.property('user')
+      .to.have.property('user')
       .which.is.a('object')
       .that.has.keys(['id', 'name', 'email', 'cpf', 'birthDate']);
 
-    expect(response).to.has.property('token').which.is.a('string');
+    expect(response).to.have.property('token').which.is.a('string');
     expect(verifiedToken)
-      .to.has.property('payload')
+      .to.have.property('payload')
       .which.is.a('object')
-      .that.includes.keys(['id', 'name', 'email', 'cpf', 'birthDate']);
+      .that.has.keys(['id', 'name', 'email', 'cpf', 'birthDate']);
   });
 });
