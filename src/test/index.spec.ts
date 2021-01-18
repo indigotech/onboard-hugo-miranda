@@ -90,16 +90,17 @@ describe('E2E GraphQL - Mutation - User', () => {
       .that.has.keys(['id', 'name', 'email', 'cpf', 'birthDate'])
       .which.include({
         id: users[0].id.toString(),
-      name: 'username1',
-      email: 'useremail1',
-      birthDate: 'userbirthDate1',
-      cpf: 'usercpf1',
-    });
+        name: 'username1',
+        email: 'useremail1',
+        birthDate: 'userbirthDate1',
+        cpf: 'usercpf1',
+      });
 
     expect(response).to.have.property('token').which.is.a('string');
     expect(verifiedToken)
       .to.have.property('payload')
       .which.is.a('object')
-      .that.has.keys(['id', 'name', 'email', 'cpf', 'birthDate']);
+      .that.have.key('userId')
+      .that.is.eql({ userId: users[0].id });
   });
 });

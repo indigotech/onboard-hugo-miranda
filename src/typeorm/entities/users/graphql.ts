@@ -66,9 +66,7 @@ export const UserResolvers = {
         throw new Error('Unauthorized. Possible invalid credentials.');
       }
 
-      Object.assign(user, { password: undefined });
-
-      const token = jwtProvider.sign({ payload: user, rememberMe });
+      const token = jwtProvider.sign({ payload: { userId: user.id }, rememberMe });
 
       return { user, token, rememberMe };
     },
