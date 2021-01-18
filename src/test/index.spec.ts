@@ -41,17 +41,15 @@ describe('Testing GraphQL - Hello', () => {
 
 describe('E2E GraphQL - Mutation - User', () => {
   beforeEach(async () => {
-    for (let i = 1; i <= 3; i++) {
-      const password = await hashProvider.generate(`userpassword${i}`);
-      const user = usersRepository.create({
-        name: `username${i}`,
-        email: `useremail${i}`,
-        password,
-        birthDate: `userbirthDate${i}`,
-        cpf: `usercpf${i}`,
-      });
-      users.push(user);
-    }
+    const password = await hashProvider.generate(`userpassword1`);
+    const user = usersRepository.create({
+      name: `username1`,
+      email: `useremail1`,
+      password,
+      birthDate: `userbirthDate1`,
+      cpf: `usercpf1`,
+    });
+    users.push(user);
     await usersRepository.save(users);
   });
 
