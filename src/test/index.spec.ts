@@ -12,6 +12,7 @@ let baseURL: string;
 let usersRepository: Repository<User>;
 let hashProvider: HashProvider;
 let jwtProvider: JWTProvider;
+const users: User[] = [];
 
 before(async () => {
   await runServer();
@@ -40,8 +41,6 @@ describe('Testing GraphQL - Hello', () => {
 
 describe('E2E GraphQL - Mutation - User', () => {
   beforeEach(async () => {
-    const users: User[] = [];
-
     for (let i = 1; i <= 3; i++) {
       const password = await hashProvider.generate(`userpassword${i}`);
       const user = usersRepository.create({
@@ -80,22 +79,22 @@ describe('E2E GraphQL - Mutation - User', () => {
       },
     };
 
-    // console.log(request);
-    let response;
-    let verifiedToken;
-    try {
-      const { body } = await supertest(baseURL).post('').send(request);
-      response = body.data.login;
+    const { body } = await supertest(baseURL).post('').send(request);
+    const response = body.data.login;
 
-      verifiedToken = await jwtProvider.verify(response.token);
-    } catch (error) {
-      console.log(error);
-    }
+    const verifiedToken = await jwtProvider.verify(response.token);
 
     expect(response)
       .to.have.property('user')
       .which.is.a('object')
-      .that.has.keys(['id', 'name', 'email', 'cpf', 'birthDate']);
+      .that.has.keys(['id', 'name', 'email', 'cpf', 'birthDate'])
+      .which.include({
+        id: users[0].id.toString(),
+      name: 'username1',
+      email: 'useremail1',
+      birthDate: 'userbirthDate1',
+      cpf: 'usercpf1',
+    });
 
     expect(response).to.have.property('token').which.is.a('string');
     expect(verifiedToken)
