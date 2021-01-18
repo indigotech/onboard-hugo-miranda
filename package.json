@@ -8,7 +8,7 @@
    "scripts": {
       "build": "rm -rf build/ && yarn tsc",
       "start": "ts-node -r tsconfig-paths/register src/server.ts",
-      "test": "ENV=TEST ts-node -r tsconfig-paths/register src/server.ts",
+      "test": "ENV=TEST mocha -r ts-node/register -r tsconfig-paths/register --colors src/test/index.spec.ts --exit",
       "dev": "ENV=DEV nodemon -r tsconfig-paths/register -w src --ext ts --exec ts-node src/server.ts",
       "typeorm": "ts-node ./node_modules/typeorm/cli.js",
       "eslint:verify": "yarn eslint ./src/**"
@@ -25,15 +25,21 @@
    },
    "devDependencies": {
       "@types/bcryptjs": "2.4.2",
+      "@types/chai": "4.2.14",
       "@types/jsonwebtoken": "8.5.0",
+      "@types/mocha": "8.2.0",
+      "@types/supertest": "2.0.10",
       "@typescript-eslint/eslint-plugin": "4.12.0",
       "@typescript-eslint/parser": "4.12.0",
+      "chai": "4.2.0",
       "eslint": "7.17.0",
       "eslint-config-prettier": "7.1.0",
       "eslint-plugin-prettier": "3.3.1",
+      "mocha": "8.2.1",
       "nodemon": "2.0.7",
       "prettier": "2.2.1",
       "prettier-eslint": "12.0.0",
+      "supertest": "6.0.1",
       "ts-node": "3.3.0",
       "tsconfig-paths": "3.9.0",
       "typescript": "4.1.3"
