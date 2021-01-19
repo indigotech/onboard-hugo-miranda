@@ -185,14 +185,17 @@ describe('E2E GraphQL - Mutation - User', () => {
 
     const { body } = await supertest(baseURL).post('').send(request);
 
-    expect(body).to.be.an('object').that.have.nested.property('errors').that.is.an('array').which.has.lengthOf.least(1);
-    expect(body.errors[0])
-      .to.be.an('object')
-      .that.have.property('extensions')
-      .with.nested.property('exception')
-      .with.nested.property('additionalInfo')
+    expect(body.errors).to.have.lengthOf.least(1);
+
+    expect(body.errors[0]).to.have.property('message').eql('Unauthorized. Possible invalid credentials.');
+
+    expect(body.errors[0].extensions.exception)
+      .to.have.property('additionalInfo')
       .to.be.eql('Email or Password is null.');
-    expect(body).to.have.nested.property('data').to.be.eql(null);
+
+    expect(body.errors[0].extensions.exception).to.have.property('code').eq(401);
+
+    expect(body).to.have.nested.property('data').to.be.null;
   });
 
   it('Should not login with invalid email.', async () => {
@@ -200,14 +203,15 @@ describe('E2E GraphQL - Mutation - User', () => {
 
     const { body } = await supertest(baseURL).post('').send(request);
 
-    expect(body).to.be.an('object').that.have.nested.property('errors').that.is.an('array').which.has.lengthOf.least(1);
-    expect(body.errors[0])
-      .to.be.an('object')
-      .that.have.property('extensions')
-      .with.nested.property('exception')
-      .with.nested.property('additionalInfo')
-      .to.be.eql('Invalid email format.');
-    expect(body).to.have.nested.property('data').to.be.eql(null);
+    expect(body.errors).to.have.lengthOf.least(1);
+
+    expect(body.errors[0]).to.have.property('message').eql('Unauthorized. Possible invalid credentials.');
+
+    expect(body.errors[0].extensions.exception).to.have.property('additionalInfo').to.be.eql('Invalid email format.');
+
+    expect(body.errors[0].extensions.exception).to.have.property('code').eq(401);
+
+    expect(body).to.have.nested.property('data').to.be.null;
   });
 
   it('Should not login if user does not exist.', async () => {
@@ -215,14 +219,15 @@ describe('E2E GraphQL - Mutation - User', () => {
 
     const { body } = await supertest(baseURL).post('').send(request);
 
-    expect(body).to.be.an('object').that.have.nested.property('errors').that.is.an('array').which.has.lengthOf.least(1);
-    expect(body.errors[0])
-      .to.be.an('object')
-      .that.have.property('extensions')
-      .with.nested.property('exception')
-      .with.nested.property('additionalInfo')
-      .to.be.eql('User not found.');
-    expect(body).to.have.nested.property('data').to.be.eql(null);
+    expect(body.errors).to.have.lengthOf.least(1);
+
+    expect(body.errors[0]).to.have.property('message').eql('Unauthorized. Possible invalid credentials.');
+
+    expect(body.errors[0].extensions.exception).to.have.property('additionalInfo').to.be.eql('User not found.');
+
+    expect(body.errors[0].extensions.exception).to.have.property('code').eq(401);
+
+    expect(body).to.have.nested.property('data').to.be.null;
   });
 
   it('Should not login if password does not match.', async () => {
@@ -230,13 +235,16 @@ describe('E2E GraphQL - Mutation - User', () => {
 
     const { body } = await supertest(baseURL).post('').send(request);
 
-    expect(body).to.be.an('object').that.have.nested.property('errors').that.is.an('array').which.has.lengthOf.least(1);
-    expect(body.errors[0])
-      .to.be.an('object')
-      .that.have.property('extensions')
-      .with.nested.property('exception')
-      .with.nested.property('additionalInfo')
+    expect(body.errors).to.have.lengthOf.least(1);
+
+    expect(body.errors[0]).to.have.property('message').eql('Unauthorized. Possible invalid credentials.');
+
+    expect(body.errors[0].extensions.exception)
+      .to.have.property('additionalInfo')
       .to.be.eql('Password does not match.');
-    expect(body).to.have.nested.property('data').to.be.eql(null);
+
+    expect(body.errors[0].extensions.exception).to.have.property('code').eq(401);
+
+    expect(body).to.have.nested.property('data').to.be.null;
   });
 });
