@@ -1,10 +1,4 @@
-export interface IAppError extends Error {
-  code: number;
-  message: string;
-  additionalInfo?: string;
-}
-
-export class AppError extends Error implements IAppError {
+export class AppError extends Error {
   public readonly message: string;
   public readonly code: number;
   public readonly additionalInfo: string;
