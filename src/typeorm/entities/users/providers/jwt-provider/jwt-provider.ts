@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken';
-import { IJWTProvider, Sign } from './i-jwt-provider';
+import { IJWTProvider, IVerifyResponse, Sign } from './i-jwt-provider';
 import { JWTConfig } from './jwt-config';
 
 export class JWTProvider implements IJWTProvider {
@@ -8,9 +8,11 @@ export class JWTProvider implements IJWTProvider {
     return jwt.sign({ payload }, JWTConfig.jwt.privateKey, JWTConfig.signOptions);
   }
 
-  verify(token: string): Promise<any> {
+  verify(token: string): Promise<IVerifyResponse> {
     return new Promise((resolve, reject) =>
-      jwt.verify(token, JWTConfig.jwt.publicKey, (error, data) => (error ? reject(error) : resolve(data))),
+      jwt.verify(token, JWTConfig.jwt.publicKey, (error, data) =>
+        error ? reject(error) : resolve(data as IVerifyResponse),
+      ),
     );
   }
 }
