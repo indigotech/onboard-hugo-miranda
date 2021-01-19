@@ -9,7 +9,7 @@ export class AppError extends Error implements IAppError {
   public readonly code: number;
   public readonly additionalInfo: string;
 
-  constructor(message: string, code = 400, additionalInfo?: string) {
+  constructor(message: string, code = 500, additionalInfo?: string) {
     super(message);
 
     this.message = message;
