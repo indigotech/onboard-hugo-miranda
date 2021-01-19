@@ -14,7 +14,7 @@ let baseURL: string;
 let usersRepository: Repository<User>;
 let hashProvider: HashProvider;
 let jwtProvider: JWTProvider;
-const users: User[] = [];
+let user: User;
 
 before(async () => {
   await runServer();
@@ -44,15 +44,13 @@ describe('Testing GraphQL - Hello', () => {
 describe('E2E GraphQL - Mutation - User', () => {
   beforeEach(async () => {
     const password = await hashProvider.generate(`userpassword1`);
-    const user = usersRepository.create({
+    user = await usersRepository.save({
       name: `username1`,
       email: `useremail1@provider.com`,
       password,
       birthDate: `userbirthDate1`,
       cpf: `usercpf1`,
     });
-    users.push(user);
-    await usersRepository.save(users);
   });
 
   afterEach(async () => await usersRepository.delete({}));
@@ -70,7 +68,7 @@ describe('E2E GraphQL - Mutation - User', () => {
     const verifiedToken = await jwtProvider.verify(response.token);
 
     expect(response).to.have.property('user').to.be.deep.eq({
-      id: users[0].id.toString(),
+      id: user.id.toString(),
       name: 'username1',
       email: 'useremail1@provider.com',
       birthDate: 'userbirthDate1',
@@ -78,7 +76,7 @@ describe('E2E GraphQL - Mutation - User', () => {
     });
 
     expect(response).to.have.property('token').which.is.a('string');
-    expect(verifiedToken.payload.userId).to.be.eq(users[0].id);
+    expect(verifiedToken.payload.userId).to.be.eq(user.id);
   });
 
   it('Should validate jwt token after expiration time (not remember me)', async () => {
@@ -94,7 +92,7 @@ describe('E2E GraphQL - Mutation - User', () => {
     const verifiedToken = await jwtProvider.verify(response.token);
 
     expect(response).to.have.property('user').to.be.deep.eq({
-      id: users[0].id.toString(),
+      id: user.id.toString(),
       name: 'username1',
       email: 'useremail1@provider.com',
       birthDate: 'userbirthDate1',
@@ -132,7 +130,7 @@ describe('E2E GraphQL - Mutation - User', () => {
     const verifiedToken = await jwtProvider.verify(response.token);
 
     expect(response).to.have.property('user').to.be.deep.eq({
-      id: users[0].id.toString(),
+      id: user.id.toString(),
       name: 'username1',
       email: 'useremail1@provider.com',
       birthDate: 'userbirthDate1',
