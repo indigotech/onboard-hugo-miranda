@@ -137,15 +137,18 @@ describe('E2E GraphQL - Mutation - User', () => {
     currentTimestamp.setMilliseconds(0);
 
     const expectExpiration = currentTimestamp;
-    expectExpiration.setMinutes(currentTimestamp.getMinutes() + 15);
+
+    const minutesToExpire = (verifiedToken.exp - verifiedToken.iat) / 60;
+
+    expectExpiration.setMinutes(currentTimestamp.getMinutes() + minutesToExpire);
 
     const tokenExpires = new Date(verifiedToken.exp * 1000);
 
-    const expiresIn15m = +expectExpiration === +tokenExpires;
+    const expiresIn = +expectExpiration === +tokenExpires;
     const isTokenExpired = currentTimestamp > tokenExpires;
 
     expect(isTokenExpired).to.be.eq(false);
-    expect(expiresIn15m).to.be.eq(true);
+    expect(expiresIn).to.be.eq(true);
   });
 
   it('Should validate jwt token after expiration time (remember me)', async () => {
@@ -189,15 +192,18 @@ describe('E2E GraphQL - Mutation - User', () => {
     currentTimestamp.setMilliseconds(0);
 
     const expectExpiration = currentTimestamp;
-    expectExpiration.setMinutes(currentTimestamp.getMinutes() + 30);
+
+    const minutesToExpire = (verifiedToken.exp - verifiedToken.iat) / 60;
+
+    expectExpiration.setMinutes(currentTimestamp.getMinutes() + minutesToExpire);
 
     const tokenExpires = new Date(verifiedToken.exp * 1000);
 
-    const expiresIn15m = +expectExpiration === +tokenExpires;
+    const expiresIn = +expectExpiration === +tokenExpires;
     const isTokenExpired = currentTimestamp > tokenExpires;
 
     expect(isTokenExpired).to.be.eq(false);
-    expect(expiresIn15m).to.be.eq(true);
+    expect(expiresIn).to.be.eq(true);
   });
 
   it('Should not validate jwt token after expiration time', async () => {
