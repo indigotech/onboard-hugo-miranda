@@ -16,6 +16,13 @@ let hashProvider: HashProvider;
 let jwtProvider: JWTProvider;
 let user: User;
 
+const expectedUserData = {
+  name: 'username1',
+  email: 'useremail1@provider.com',
+  birthDate: 'userbirthDate1',
+  cpf: 'usercpf1',
+};
+
 before(async () => {
   await runServer();
 
@@ -67,13 +74,12 @@ describe('E2E GraphQL - Mutation - User', () => {
 
     const verifiedToken = await jwtProvider.verify(response.token);
 
-    expect(response).to.have.property('user').to.be.deep.eq({
-      id: user.id.toString(),
-      name: 'username1',
-      email: 'useremail1@provider.com',
-      birthDate: 'userbirthDate1',
-      cpf: 'usercpf1',
-    });
+    expect(response)
+      .to.have.property('user')
+      .to.be.deep.eq({
+        ...expectedUserData,
+        id: user.id.toString(),
+      });
 
     expect(response).to.have.property('token').which.is.a('string');
     expect(verifiedToken.payload.userId).to.be.eq(user.id);
@@ -91,13 +97,12 @@ describe('E2E GraphQL - Mutation - User', () => {
 
     const verifiedToken = await jwtProvider.verify(response.token);
 
-    expect(response).to.have.property('user').to.be.deep.eq({
-      id: user.id.toString(),
-      name: 'username1',
-      email: 'useremail1@provider.com',
-      birthDate: 'userbirthDate1',
-      cpf: 'usercpf1',
-    });
+    expect(response)
+      .to.have.property('user')
+      .to.be.deep.eq({
+        ...expectedUserData,
+        id: user.id.toString(),
+      });
 
     const currentTimestamp = new Date();
     currentTimestamp.setMilliseconds(0);
@@ -129,13 +134,12 @@ describe('E2E GraphQL - Mutation - User', () => {
 
     const verifiedToken = await jwtProvider.verify(response.token);
 
-    expect(response).to.have.property('user').to.be.deep.eq({
-      id: user.id.toString(),
-      name: 'username1',
-      email: 'useremail1@provider.com',
-      birthDate: 'userbirthDate1',
-      cpf: 'usercpf1',
-    });
+    expect(response)
+      .to.have.property('user')
+      .to.be.deep.eq({
+        ...expectedUserData,
+        id: user.id.toString(),
+      });
 
     const currentTimestamp = new Date();
     currentTimestamp.setMilliseconds(0);
