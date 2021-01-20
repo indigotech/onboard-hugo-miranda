@@ -15,22 +15,35 @@ export const UserTypeDefs = gql`
     cpf: String!
   }
 
-  type LoginResponse {
+  input UserLoginInput {
+    email: String!
+    password: String!
+    "If this option is set as TRUE, than you will have a long time until the token expires"
+    rememberMe: Boolean
+  }
+
+  type UserLoginResponse {
     user: User!
     token: String!
     "If this option is set as TRUE, than you will have a long time until the token expires"
     rememberMe: Boolean!
   }
 
-  type Mutation {
-    login(input: LoginInput!): LoginResponse!
-  }
-
-  input LoginInput {
+  input UserRegisterInput {
+    name: String!
     email: String!
     password: String!
-    "If this option is set as TRUE, than you will have a long time until the token expires"
-    rememberMe: Boolean
+    cpf: String!
+    birthDate: String!
+  }
+
+  type UserRegisterResponse {
+    user: User
+  }
+
+  type Mutation {
+    login(input: UserLoginInput!): UserLoginResponse!
+    register(input: UserRegisterInput!): UserRegisterResponse
   }
 `;
 
@@ -46,6 +59,20 @@ interface UserLoginResponse {
   token: string;
   user: User;
   rememberMe: boolean;
+}
+
+interface UserRegisterParams {
+  input: {
+    name: string;
+    email: string;
+    password: string;
+    cpf: string;
+    birthDate: string;
+  };
+}
+
+interface UserRegisterResponse {
+  user?: User;
 }
 
 export const UserResolvers = {
@@ -79,6 +106,25 @@ export const UserResolvers = {
       const token = jwtProvider.sign({ payload: { userId: user.id }, rememberMe });
 
       return { user, token, rememberMe };
+    },
+
+    register: async (_, { input }: UserRegisterParams, context): Promise<UserRegisterResponse> => {
+      console.log(context.token);
+      const { name, email, cpf, birthDate } = input;
+      const hashProvider = new HashProvider();
+      const usersRepository = getRepository(User);
+
+      const password = await hashProvider.generate(input.password);
+
+      const user = usersRepository.create({
+        birthDate,
+        cpf,
+        email,
+        name,
+        password,
+      });
+
+      return { user: { ...user, id: 4128 } };
     },
   },
 };
