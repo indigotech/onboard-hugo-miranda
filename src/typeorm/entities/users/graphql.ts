@@ -3,6 +3,8 @@ import { getRepository } from 'typeorm';
 import { User } from './user-entity';
 import { JWTProvider } from './providers/jwt-provider/jwt-provider';
 import { HashProvider } from './providers/hash-provider/hash-provider';
+import { AppError } from 'src/errors/errors';
+import { ValidateEmail } from 'src/utils/validate-email';
 
 export const UserTypeDefs = gql`
   type User {
@@ -55,15 +57,23 @@ export const UserResolvers = {
       const usersRepository = getRepository(User);
 
       if (!email || !password) {
-        throw new Error('Unauthorized. Possible invalid credentials.');
+        throw new AppError('Unauthorized. Possible invalid credentials.', 401, 'Email or Password is null.');
+      }
+
+      if (email && !ValidateEmail(email)) {
+        throw new AppError('Unauthorized. Possible invalid credentials.', 401, 'Invalid email format.');
       }
 
       const user = await usersRepository.findOne({ email });
 
+      if (!user) {
+        throw new AppError('Unauthorized. Possible invalid credentials.', 401, 'User not found.');
+      }
+
       const passswordMatch = await hashProvider.verify(password, user.password);
 
-      if (!user || !passswordMatch) {
-        throw new Error('Unauthorized. Possible invalid credentials.');
+      if (!passswordMatch) {
+        throw new AppError('Unauthorized. Possible invalid credentials.', 401, 'Password does not match.');
       }
 
       const token = jwtProvider.sign({ payload: { userId: user.id }, rememberMe });

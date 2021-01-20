@@ -1,18 +1,27 @@
 import '@config/env';
 import { expect } from 'chai';
 import { beforeEach } from 'mocha';
+import { JWTProvider } from 'src/typeorm/entities/users/providers/jwt-provider/jwt-provider';
+import { describe, it } from 'mocha';
 import { runServer } from 'src/server';
 import { HashProvider } from 'src/typeorm/entities/users/providers/hash-provider/hash-provider';
-import { JWTProvider } from 'src/typeorm/entities/users/providers/jwt-provider/jwt-provider';
 import { User } from 'src/typeorm/entities/users/user-entity';
 import supertest from 'supertest';
 import { getRepository, Repository } from 'typeorm';
+import { QueryLoginMutation } from './request-builder';
 
 let baseURL: string;
 let usersRepository: Repository<User>;
 let hashProvider: HashProvider;
 let jwtProvider: JWTProvider;
-const users: User[] = [];
+let user: User;
+
+const expectedUserData = {
+  name: 'username1',
+  email: 'useremail1@provider.com',
+  birthDate: 'userbirthDate1',
+  cpf: 'usercpf1',
+};
 
 before(async () => {
   await runServer();
@@ -42,96 +51,58 @@ describe('Testing GraphQL - Hello', () => {
 describe('E2E GraphQL - Mutation - User', () => {
   beforeEach(async () => {
     const password = await hashProvider.generate(`userpassword1`);
-    const user = usersRepository.create({
+    user = await usersRepository.save({
       name: `username1`,
-      email: `useremail1`,
+      email: `useremail1@provider.com`,
       password,
       birthDate: `userbirthDate1`,
       cpf: `usercpf1`,
     });
-    users.push(user);
-    await usersRepository.save(users);
   });
 
   afterEach(async () => await usersRepository.delete({}));
 
   it('Should perform a successfull login returning a valid jwt token', async () => {
-    const request = {
-      query: `mutation login ($input: LoginInput! ) {
-        login( input: $input){
-          user {
-            id
-            name
-            email
-            birthDate
-            cpf
-          }
-          token
-          rememberMe
-        }
-      }`,
-      variables: {
-        input: {
-          email: 'useremail1',
-          password: 'userpassword1',
-          rememberMe: false,
-        },
-      },
-    };
+    const request = QueryLoginMutation({
+      email: 'useremail1@provider.com',
+      password: 'userpassword1',
+      rememberMe: false,
+    });
 
     const { body } = await supertest(baseURL).post('').send(request);
     const response = body.data.login;
 
     const verifiedToken = await jwtProvider.verify(response.token);
 
-    expect(response).to.have.property('user').to.be.deep.eq({
-      id: users[0].id.toString(),
-      name: 'username1',
-      email: 'useremail1',
-      birthDate: 'userbirthDate1',
-      cpf: 'usercpf1',
-    });
+    expect(response)
+      .to.have.property('user')
+      .to.be.deep.eq({
+        ...expectedUserData,
+        id: user.id.toString(),
+      });
 
     expect(response).to.have.property('token').which.is.a('string');
-    expect(verifiedToken.payload.userId).to.be.eq(users[0].id);
+    expect(verifiedToken.payload.userId).to.be.eq(user.id);
   });
 
   it('Should validate jwt token after expiration time (not remember me)', async () => {
-    const request = {
-      query: `mutation login ($input: LoginInput! ) {
-        login( input: $input){
-          user {
-            id
-            name
-            email
-            birthDate
-            cpf
-          }
-          token
-          rememberMe
-        }
-      }`,
-      variables: {
-        input: {
-          email: 'useremail1',
-          password: 'userpassword1',
-          rememberMe: false,
-        },
-      },
-    };
+    const request = QueryLoginMutation({
+      email: 'useremail1@provider.com',
+      password: 'userpassword1',
+      rememberMe: false,
+    });
 
     const { body } = await supertest(baseURL).post('').send(request);
     const response = body.data.login;
 
     const verifiedToken = await jwtProvider.verify(response.token);
 
-    expect(response).to.have.property('user').to.be.deep.eq({
-      id: users[0].id.toString(),
-      name: 'username1',
-      email: 'useremail1',
-      birthDate: 'userbirthDate1',
-      cpf: 'usercpf1',
-    });
+    expect(response)
+      .to.have.property('user')
+      .to.be.deep.eq({
+        ...expectedUserData,
+        id: user.id.toString(),
+      });
 
     const currentTimestamp = new Date();
     currentTimestamp.setMilliseconds(0);
@@ -152,41 +123,23 @@ describe('E2E GraphQL - Mutation - User', () => {
   });
 
   it('Should validate jwt token after expiration time (remember me)', async () => {
-    const request = {
-      query: `mutation login ($input: LoginInput! ) {
-        login( input: $input){
-          user {
-            id
-            name
-            email
-            birthDate
-            cpf
-          }
-          token
-          rememberMe
-        }
-      }`,
-      variables: {
-        input: {
-          email: 'useremail1',
-          password: 'userpassword1',
-          rememberMe: true,
-        },
-      },
-    };
+    const request = QueryLoginMutation({
+      email: 'useremail1@provider.com',
+      password: 'userpassword1',
+      rememberMe: true,
+    });
 
     const { body } = await supertest(baseURL).post('').send(request);
     const response = body.data.login;
 
     const verifiedToken = await jwtProvider.verify(response.token);
 
-    expect(response).to.have.property('user').to.be.deep.eq({
-      id: users[0].id.toString(),
-      name: 'username1',
-      email: 'useremail1',
-      birthDate: 'userbirthDate1',
-      cpf: 'usercpf1',
-    });
+    expect(response)
+      .to.have.property('user')
+      .to.be.deep.eq({
+        ...expectedUserData,
+        id: user.id.toString(),
+      });
 
     const currentTimestamp = new Date();
     currentTimestamp.setMilliseconds(0);
@@ -207,28 +160,11 @@ describe('E2E GraphQL - Mutation - User', () => {
   });
 
   it('Should not validate jwt token after expiration time', async () => {
-    const request = {
-      query: `mutation login ($input: LoginInput! ) {
-        login( input: $input){
-          user {
-            id
-            name
-            email
-            birthDate
-            cpf
-          }
-          token
-          rememberMe
-        }
-      }`,
-      variables: {
-        input: {
-          email: 'useremail1',
-          password: 'userpassword1',
-          rememberMe: false,
-        },
-      },
-    };
+    const request = QueryLoginMutation({
+      email: 'useremail1@provider.com',
+      password: 'userpassword1',
+      rememberMe: false,
+    });
 
     const { body } = await supertest(baseURL).post('').send(request);
     const response = body.data.login;
@@ -244,5 +180,73 @@ describe('E2E GraphQL - Mutation - User', () => {
     const isTokenExpired = tokenExpires > afterExpires;
 
     expect(isTokenExpired).to.be.eql(true);
+  });
+
+  it('Should not login without email or password.', async () => {
+    const request = QueryLoginMutation({ email: '', password: '' });
+
+    const { body } = await supertest(baseURL).post('').send(request);
+
+    expect(body.errors).to.have.lengthOf.least(1);
+
+    expect(body.errors[0]).to.have.property('message').eql('Unauthorized. Possible invalid credentials.');
+
+    expect(body.errors[0].extensions.exception)
+      .to.have.property('additionalInfo')
+      .to.be.eql('Email or Password is null.');
+
+    expect(body.errors[0].extensions.exception).to.have.property('code').eq(401);
+
+    expect(body).to.have.nested.property('data').to.be.null;
+  });
+
+  it('Should not login with invalid email.', async () => {
+    const request = QueryLoginMutation({ email: 'invalid Email Input', password: 'invalid Password' });
+
+    const { body } = await supertest(baseURL).post('').send(request);
+
+    expect(body.errors).to.have.lengthOf.least(1);
+
+    expect(body.errors[0]).to.have.property('message').eql('Unauthorized. Possible invalid credentials.');
+
+    expect(body.errors[0].extensions.exception).to.have.property('additionalInfo').to.be.eql('Invalid email format.');
+
+    expect(body.errors[0].extensions.exception).to.have.property('code').eq(401);
+
+    expect(body).to.have.nested.property('data').to.be.null;
+  });
+
+  it('Should not login if user does not exist.', async () => {
+    const request = QueryLoginMutation({ email: 'InvalidUser@Email.com', password: 'invalid Password' });
+
+    const { body } = await supertest(baseURL).post('').send(request);
+
+    expect(body.errors).to.have.lengthOf.least(1);
+
+    expect(body.errors[0]).to.have.property('message').eql('Unauthorized. Possible invalid credentials.');
+
+    expect(body.errors[0].extensions.exception).to.have.property('additionalInfo').to.be.eql('User not found.');
+
+    expect(body.errors[0].extensions.exception).to.have.property('code').eq(401);
+
+    expect(body).to.have.nested.property('data').to.be.null;
+  });
+
+  it('Should not login if password does not match.', async () => {
+    const request = QueryLoginMutation({ email: 'useremail1@provider.com', password: 'invalid Password' });
+
+    const { body } = await supertest(baseURL).post('').send(request);
+
+    expect(body.errors).to.have.lengthOf.least(1);
+
+    expect(body.errors[0]).to.have.property('message').eql('Unauthorized. Possible invalid credentials.');
+
+    expect(body.errors[0].extensions.exception)
+      .to.have.property('additionalInfo')
+      .to.be.eql('Password does not match.');
+
+    expect(body.errors[0].extensions.exception).to.have.property('code').eq(401);
+
+    expect(body).to.have.nested.property('data').to.be.null;
   });
 });
