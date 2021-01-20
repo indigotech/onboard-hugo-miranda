@@ -4,7 +4,7 @@ import { User } from './user-entity';
 import { JWTProvider } from './providers/jwt-provider/jwt-provider';
 import { HashProvider } from './providers/hash-provider/hash-provider';
 import { AppError } from 'src/errors/errors';
-import { ValidateEmail } from 'src/utils/validate-email';
+import { FormatCpf, ValidateEmail, ValidateCpf, ValidatePassword } from 'src/utils';
 
 export const UserTypeDefs = gql`
   type User {
@@ -31,14 +31,17 @@ export const UserTypeDefs = gql`
 
   input UserRegisterInput {
     name: String!
+    "Valid format: YourEmail@provider.domain"
     email: String!
+    "Min 7 characters, 1 letter and 1 number"
     password: String!
+    "Valid formats: 123.456.789-01 or 12345678901"
     cpf: String!
     birthDate: String!
   }
 
   type UserRegisterResponse {
-    user: User
+    user: User!
   }
 
   type Mutation {
@@ -72,7 +75,7 @@ interface UserRegisterParams {
 }
 
 interface UserRegisterResponse {
-  user?: User;
+  user: User;
 }
 
 export const UserResolvers = {
@@ -109,22 +112,51 @@ export const UserResolvers = {
     },
 
     register: async (_, { input }: UserRegisterParams, context): Promise<UserRegisterResponse> => {
-      console.log(context.token);
+      if (!context.token) {
+        throw new AppError('Unauthorized. Please log in first.', 401, 'Token not provided.');
+      }
+
       const { name, email, cpf, birthDate } = input;
+
       const hashProvider = new HashProvider();
       const usersRepository = getRepository(User);
 
+      if (!name || !email || !cpf || !birthDate || !input.password) {
+        throw new AppError('Register could not be done.', 400, 'Verify if all fields is filled with valid data.');
+      }
+
+      if (!ValidateEmail(email)) {
+        throw new AppError('Register could not be done.', 400, 'Verify if email field has a valid format.');
+      }
+
+      const emailAlreadyExists = await usersRepository.findOne({ email });
+
+      if (emailAlreadyExists) {
+        throw new AppError('Register could not be done.', 401, 'Email already registred.');
+      }
+
+      if (!ValidatePassword(input.password)) {
+        throw new AppError(
+          'Register could not be done.',
+          400,
+          'Verify if password field has a valid format. Min 7 characters, 1 letter and 1 number',
+        );
+      }
+      if (!ValidateCpf(cpf)) {
+        throw new AppError('Register could not be done.', 400, 'Verify if cpf field has a valid format.');
+      }
+
       const password = await hashProvider.generate(input.password);
 
-      const user = usersRepository.create({
+      const user = await usersRepository.save({
         birthDate,
-        cpf,
+        cpf: FormatCpf(cpf),
         email,
         name,
         password,
       });
 
-      return { user: { ...user, id: 4128 } };
+      return { user };
     },
   },
 };
