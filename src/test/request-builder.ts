@@ -1,4 +1,4 @@
-interface IRequestBuilder {
+interface IUserLoginRequest {
   email: string;
   password: string;
   rememberMe?: boolean;
@@ -7,13 +7,13 @@ interface IRequestBuilder {
 interface IRequestBuilderResponse {
   query: string;
   variables: {
-    input: IRequestBuilder;
+    input: any;
   };
 }
 
-export const QueryLoginMutation = (input: IRequestBuilder): IRequestBuilderResponse => {
+export const QueryUserLoginMutation = (input: IUserLoginRequest): IRequestBuilderResponse => {
   return {
-    query: `mutation login ($input: LoginInput! ) {
+    query: `mutation login ($input: UserLoginInput! ) {
       login( input: $input){
         user {
           id
