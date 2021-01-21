@@ -8,6 +8,7 @@ import { getRepository, Repository } from 'typeorm';
 import { QueryUserLoginMutation } from './request-builder';
 
 const baseURL = testConfig.baseURL;
+const sampleUsers = testConfig.samples.users;
 let usersRepository: Repository<User>;
 let hashProvider: HashProvider;
 
@@ -15,15 +16,9 @@ describe('E2E GraphQL - User - Mutation:Login', () => {
   beforeEach(async () => {
     usersRepository = getRepository(User);
     hashProvider = new HashProvider();
-    const password = await hashProvider.generate(`userpassword1`);
+    const password = await hashProvider.generate(sampleUsers[0].password);
 
-    await usersRepository.save({
-      name: `username1`,
-      email: `useremail1@provider.com`,
-      password,
-      birthDate: `userbirthDate1`,
-      cpf: `usercpf1`,
-    });
+    await usersRepository.save({ ...sampleUsers[0], password });
   });
 
   afterEach(async () => await usersRepository.delete({}));
@@ -79,7 +74,7 @@ describe('E2E GraphQL - User - Mutation:Login', () => {
   });
 
   it('Should not login if password does not match.', async () => {
-    const request = QueryUserLoginMutation({ email: 'useremail1@provider.com', password: 'invalid Password' });
+    const request = QueryUserLoginMutation({ email: sampleUsers[0].email, password: 'invalid Password' });
 
     const { body } = await supertest(baseURL).post('').send(request);
 

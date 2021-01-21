@@ -14,11 +14,12 @@ let hashProvider: HashProvider;
 let user: User;
 
 const baseURL = testConfig.baseURL;
+const sampleUsers = testConfig.samples.users;
 const expectedUserData = {
-  name: 'username1',
-  email: 'useremail1@provider.com',
-  birthDate: 'userbirthDate1',
-  cpf: 'usercpf1',
+  name: sampleUsers[0].name,
+  email: sampleUsers[0].email,
+  birthDate: sampleUsers[0].birthDate,
+  cpf: sampleUsers[0].cpf,
 };
 
 describe('E2E GraphQL - User - Mutation:Login : JWT', () => {
@@ -26,23 +27,17 @@ describe('E2E GraphQL - User - Mutation:Login : JWT', () => {
     usersRepository = getRepository(User);
     hashProvider = new HashProvider();
     jwtProvider = new JWTProvider();
-    const password = await hashProvider.generate(`userpassword1`);
+    const password = await hashProvider.generate(sampleUsers[0].password);
 
-    user = await usersRepository.save({
-      name: `username1`,
-      email: `useremail1@provider.com`,
-      password,
-      birthDate: `userbirthDate1`,
-      cpf: `usercpf1`,
-    });
+    user = await usersRepository.save({ ...sampleUsers[0], password });
   });
 
   afterEach(async () => await usersRepository.delete({}));
 
   it('Should perform a successfull login returning a valid jwt token', async () => {
     const request = QueryUserLoginMutation({
-      email: 'useremail1@provider.com',
-      password: 'userpassword1',
+      email: sampleUsers[0].email,
+      password: sampleUsers[0].password,
       rememberMe: false,
     });
 
@@ -64,8 +59,8 @@ describe('E2E GraphQL - User - Mutation:Login : JWT', () => {
 
   it('Should validate jwt token after expiration time (not remember me)', async () => {
     const request = QueryUserLoginMutation({
-      email: 'useremail1@provider.com',
-      password: 'userpassword1',
+      email: sampleUsers[0].email,
+      password: sampleUsers[0].password,
       rememberMe: false,
     });
 
@@ -101,8 +96,8 @@ describe('E2E GraphQL - User - Mutation:Login : JWT', () => {
 
   it('Should validate jwt token after expiration time (remember me)', async () => {
     const request = QueryUserLoginMutation({
-      email: 'useremail1@provider.com',
-      password: 'userpassword1',
+      email: sampleUsers[0].email,
+      password: sampleUsers[0].password,
       rememberMe: true,
     });
 
@@ -138,8 +133,8 @@ describe('E2E GraphQL - User - Mutation:Login : JWT', () => {
 
   it('Should not validate jwt token after expiration time', async () => {
     const request = QueryUserLoginMutation({
-      email: 'useremail1@provider.com',
-      password: 'userpassword1',
+      email: sampleUsers[0].email,
+      password: sampleUsers[0].password,
       rememberMe: false,
     });
 
