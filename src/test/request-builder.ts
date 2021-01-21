@@ -11,6 +11,14 @@ interface IRequestBuilderResponse {
   };
 }
 
+interface IUserRegisterRequest {
+  name: string;
+  email: string;
+  password: string;
+  cpf: string;
+  birthDate: string;
+}
+
 export const QueryUserLoginMutation = (input: IUserLoginRequest): IRequestBuilderResponse => {
   return {
     query: `mutation login ($input: UserLoginInput! ) {
@@ -23,6 +31,25 @@ export const QueryUserLoginMutation = (input: IUserLoginRequest): IRequestBuilde
           cpf
         }
         token
+      }
+    }`,
+    variables: {
+      input,
+    },
+  };
+};
+
+export const QueryUserRegisterMutation = (input: IUserRegisterRequest): IRequestBuilderResponse => {
+  return {
+    query: `mutation register($input: UserRegisterInput!) {
+      register(input: $input) {
+        user {
+          id
+          name
+          email
+          birthDate
+          cpf
+        }
       }
     }`,
     variables: {
