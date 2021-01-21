@@ -147,10 +147,11 @@ export const UserResolvers = {
       }
 
       const password = await hashProvider.generate(input.password);
+      const formattedCpf = FormatCpf(cpf);
 
       const user = await usersRepository.save({
         birthDate,
-        cpf: FormatCpf(cpf),
+        cpf: formattedCpf,
         email,
         name,
         password,
