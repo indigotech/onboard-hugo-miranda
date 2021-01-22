@@ -19,6 +19,10 @@ interface IUserRegisterRequest {
   birthDate: string;
 }
 
+interface IUserSearchRequest {
+  id: number;
+}
+
 export const QueryUserLoginMutation = (input: IUserLoginRequest): IRequestBuilderResponse => {
   return {
     query: `mutation login ($input: UserLoginInput! ) {
@@ -49,6 +53,25 @@ export const QueryUserRegisterMutation = (input: IUserRegisterRequest): IRequest
           email
           birthDate
           cpf
+        }
+      }
+    }`,
+    variables: {
+      input,
+    },
+  };
+};
+
+export const QueryUserSearchQuery = (input: IUserSearchRequest): IRequestBuilderResponse => {
+  return {
+    query: `query userSearch ($input: UserSearchInput!){
+      userSearch(input: $input){
+        user{
+          id
+          name
+          email
+          cpf
+          birthDate
         }
       }
     }`,
