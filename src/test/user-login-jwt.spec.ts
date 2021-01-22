@@ -8,6 +8,8 @@ import { formatCpf } from 'src/utils';
 import supertest from 'supertest';
 import { getRepository, Repository } from 'typeorm';
 import { QueryUserLoginMutation } from './request-builder';
+import timeParser from 'parse-duration';
+import { JWTConfig } from 'src/typeorm/entities/users/providers/jwt-provider/jwt-config';
 
 let usersRepository: Repository<User>;
 let jwtProvider: JWTProvider;
@@ -81,13 +83,18 @@ describe('E2E GraphQL - User - Mutation:Login : JWT', () => {
         id: user.id.toString(),
       });
 
+    const expectedExpirationDuration = timeParser(JWTConfig.expiresIn, 'sec');
+
     const tokenExpiresAt = new Date(verifiedToken.exp * 1000);
 
     const afterTokenExpires = new Date((verifiedToken.exp - 1) * 1000);
 
     const isTokenExpired = tokenExpiresAt < afterTokenExpires;
 
-    expect(isTokenExpired).to.be.eq(false);
+    const hasExpectedExpirationDuration = expectedExpirationDuration === verifiedToken.exp - verifiedToken.iat;
+
+    expect(isTokenExpired).to.be.false;
+    expect(hasExpectedExpirationDuration).to.be.true;
   });
 
   it('Should validate jwt token before expiration time (remember me)', async () => {
@@ -109,13 +116,18 @@ describe('E2E GraphQL - User - Mutation:Login : JWT', () => {
         id: user.id.toString(),
       });
 
+    const expectedExpirationDuration = timeParser(JWTConfig.rememberedExpiresIn, 'sec');
+
     const tokenExpiresAt = new Date(verifiedToken.exp * 1000);
 
     const afterTokenExpires = new Date((verifiedToken.exp - 1) * 1000);
 
     const isTokenExpired = tokenExpiresAt < afterTokenExpires;
 
-    expect(isTokenExpired).to.be.eq(false);
+    const hasExpectedExpirationDuration = expectedExpirationDuration === verifiedToken.exp - verifiedToken.iat;
+
+    expect(isTokenExpired).to.be.false;
+    expect(hasExpectedExpirationDuration).to.be.true;
   });
 
   it('Should not validate jwt token after expiration time', async () => {
@@ -136,6 +148,6 @@ describe('E2E GraphQL - User - Mutation:Login : JWT', () => {
 
     const isTokenExpired = tokenExpiresAt < afterTokenExpires;
 
-    expect(isTokenExpired).to.be.eql(true);
+    expect(isTokenExpired).to.be.true;
   });
 });
