@@ -62,7 +62,7 @@ describe('E2E GraphQL - User - Mutation:Login : JWT', () => {
     expect(verifiedToken.payload.userId).to.be.eq(user.id);
   });
 
-  it('Should validate jwt token after expiration time (not remember me)', async () => {
+  it('Should validate jwt token before expiration time (not remember me)', async () => {
     const request = QueryUserLoginMutation({
       email: sampleUsers[0].email,
       password: sampleUsers[0].password,
@@ -81,25 +81,16 @@ describe('E2E GraphQL - User - Mutation:Login : JWT', () => {
         id: user.id.toString(),
       });
 
-    const currentTimestamp = new Date();
-    currentTimestamp.setMilliseconds(0);
+    const tokenExpiresAt = new Date(verifiedToken.exp * 1000);
 
-    const expectExpiration = currentTimestamp;
+    const afterTokenExpires = new Date((verifiedToken.exp - 1) * 1000);
 
-    const minutesToExpire = (verifiedToken.exp - verifiedToken.iat) / 60;
-
-    expectExpiration.setMinutes(currentTimestamp.getMinutes() + minutesToExpire);
-
-    const tokenExpires = new Date(verifiedToken.exp * 1000);
-
-    const expiresIn = +expectExpiration === +tokenExpires;
-    const isTokenExpired = currentTimestamp > tokenExpires;
+    const isTokenExpired = tokenExpiresAt < afterTokenExpires;
 
     expect(isTokenExpired).to.be.eq(false);
-    expect(expiresIn).to.be.eq(true);
   });
 
-  it('Should validate jwt token after expiration time (remember me)', async () => {
+  it('Should validate jwt token before expiration time (remember me)', async () => {
     const request = QueryUserLoginMutation({
       email: sampleUsers[0].email,
       password: sampleUsers[0].password,
@@ -118,22 +109,13 @@ describe('E2E GraphQL - User - Mutation:Login : JWT', () => {
         id: user.id.toString(),
       });
 
-    const currentTimestamp = new Date();
-    currentTimestamp.setMilliseconds(0);
+    const tokenExpiresAt = new Date(verifiedToken.exp * 1000);
 
-    const expectExpiration = currentTimestamp;
+    const afterTokenExpires = new Date((verifiedToken.exp - 1) * 1000);
 
-    const minutesToExpire = (verifiedToken.exp - verifiedToken.iat) / 60;
-
-    expectExpiration.setMinutes(currentTimestamp.getMinutes() + minutesToExpire);
-
-    const tokenExpires = new Date(verifiedToken.exp * 1000);
-
-    const expiresIn = +expectExpiration === +tokenExpires;
-    const isTokenExpired = currentTimestamp > tokenExpires;
+    const isTokenExpired = tokenExpiresAt < afterTokenExpires;
 
     expect(isTokenExpired).to.be.eq(false);
-    expect(expiresIn).to.be.eq(true);
   });
 
   it('Should not validate jwt token after expiration time', async () => {
@@ -148,13 +130,11 @@ describe('E2E GraphQL - User - Mutation:Login : JWT', () => {
 
     const verifiedToken = await jwtProvider.verify(response.token);
 
-    const tokenExpires = new Date(verifiedToken.exp * 1000);
-    const afterExpires = new Date();
-    afterExpires.setMilliseconds(0);
+    const tokenExpiresAt = new Date(verifiedToken.exp * 1000);
 
-    const expectExpiration = afterExpires;
-    expectExpiration.setMinutes(afterExpires.getMinutes() - 1);
-    const isTokenExpired = tokenExpires > afterExpires;
+    const afterTokenExpires = new Date((verifiedToken.exp + 1) * 1000);
+
+    const isTokenExpired = tokenExpiresAt < afterTokenExpires;
 
     expect(isTokenExpired).to.be.eql(true);
   });
