@@ -3,7 +3,6 @@ import { expect } from 'chai';
 import { describe, it } from 'mocha';
 import { HashProvider } from 'src/typeorm/entities/users/providers/hash-provider/hash-provider';
 import { User } from 'src/typeorm/entities/users/user-entity';
-import { formatCpf } from 'src/utils';
 import supertest from 'supertest';
 import { getRepository, Repository } from 'typeorm';
 import { QueryUserLoginMutation } from './request-builder';
@@ -22,7 +21,6 @@ describe('E2E GraphQL - User - Mutation:Login', () => {
     await usersRepository.save({
       ...sampleUsers[0],
       password,
-      cpf: formatCpf(sampleUsers[0].cpf),
     });
   });
 

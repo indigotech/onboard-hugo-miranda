@@ -4,7 +4,6 @@ import { describe, it } from 'mocha';
 import { HashProvider } from 'src/typeorm/entities/users/providers/hash-provider/hash-provider';
 import { JWTProvider } from 'src/typeorm/entities/users/providers/jwt-provider/jwt-provider';
 import { User } from 'src/typeorm/entities/users/user-entity';
-import { formatCpf } from 'src/utils';
 import supertest from 'supertest';
 import { getRepository, Repository } from 'typeorm';
 import { QueryUserLoginMutation } from './request-builder';
@@ -22,7 +21,7 @@ const expectedUserData = {
   name: sampleUsers[0].name,
   email: sampleUsers[0].email,
   birthDate: sampleUsers[0].birthDate,
-  cpf: formatCpf(sampleUsers[0].cpf),
+  cpf: sampleUsers[0].cpf,
 };
 
 describe('E2E GraphQL - User - Mutation:Login : JWT', () => {
@@ -35,7 +34,6 @@ describe('E2E GraphQL - User - Mutation:Login : JWT', () => {
     user = await usersRepository.save({
       ...sampleUsers[0],
       password,
-      cpf: formatCpf(sampleUsers[0].cpf),
     });
   });
 

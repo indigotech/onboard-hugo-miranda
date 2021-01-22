@@ -5,7 +5,6 @@ import { HashProvider } from 'src/typeorm/entities/users/providers/hash-provider
 import { User } from 'src/typeorm/entities/users/user-entity';
 import supertest from 'supertest';
 import { getRepository, Repository } from 'typeorm';
-import { formatCpf } from 'src/utils';
 import { QueryUserLoginMutation, QueryUserRegisterMutation } from './request-builder';
 
 const baseURL = testConfig.baseURL;
@@ -13,6 +12,13 @@ const sampleUsers = testConfig.samples.users;
 let usersRepository: Repository<User>;
 let hashProvider: HashProvider;
 let token;
+
+const expectedUserData = {
+  name: sampleUsers[1].name,
+  email: sampleUsers[1].email,
+  birthDate: sampleUsers[1].birthDate,
+  cpf: sampleUsers[1].cpf,
+};
 
 describe('E2E GraphQL - User - Mutation:Register', () => {
   beforeEach(async () => {
@@ -23,7 +29,6 @@ describe('E2E GraphQL - User - Mutation:Register', () => {
     await usersRepository.save({
       ...sampleUsers[0],
       password,
-      cpf: formatCpf(sampleUsers[0].cpf),
     });
 
     const loginRequest = QueryUserLoginMutation({
@@ -90,17 +95,13 @@ describe('E2E GraphQL - User - Mutation:Register', () => {
 
     expect(body.data.register.user).to.be.deep.equal({
       id: body.data.register.user.id,
-      name: sampleUsers[1].name,
-      email: sampleUsers[1].email,
-      cpf: formatCpf(sampleUsers[1].cpf),
-      birthDate: sampleUsers[1].birthDate,
+      ...expectedUserData,
     });
     expect(count).to.be.eq(2);
     expect(insertedUser).to.be.deep.equal({
-      ...sampleUsers[1],
+      ...expectedUserData,
       id: Number(body.data.register.user.id),
       password: insertedUser.password,
-      cpf: formatCpf(sampleUsers[1].cpf),
     });
     expect(validPassword).to.be.true;
   });
