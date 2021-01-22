@@ -13,6 +13,9 @@ export async function runServer(): Promise<void> {
     type Query {
       hello: String
     }
+    type Mutation {
+      _empty: String
+    }
   `;
 
   const helloResolvers = {
@@ -23,7 +26,7 @@ export async function runServer(): Promise<void> {
     },
   };
 
-  const typeDefs = [helloTypeDefs, UserTypeDefs];
+  const typeDefs = [helloTypeDefs, ...UserTypeDefs];
 
   const resolvers = [helloResolvers, UserResolvers];
 
