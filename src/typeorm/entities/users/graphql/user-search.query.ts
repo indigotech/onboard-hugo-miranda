@@ -20,7 +20,7 @@ export const search = async (_, { input }: UserSearchParams): Promise<UserSearch
   const user = await usersRepository.findOne(id);
 
   if (!user) {
-    throw new AppError('Cannot find this user', 400, `User ${id} could not be found.`);
+    throw new AppError('Cannot find this user', 404, `User ${id} could not be found.`);
   }
 
   return { user };
