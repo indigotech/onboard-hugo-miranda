@@ -4,7 +4,7 @@ import { User } from './user-entity';
 import { JWTProvider } from './providers/jwt-provider/jwt-provider';
 import { HashProvider } from './providers/hash-provider/hash-provider';
 import { AppError } from 'src/errors/errors';
-import { FormatCpf, ValidateEmail, ValidateCpf, ValidatePassword } from 'src/utils';
+import { formatCpf, validateEmail, validateCpf, validatePassword } from 'src/utils';
 
 export const UserTypeDefs = gql`
   type User {
@@ -90,7 +90,7 @@ export const UserResolvers = {
         throw new AppError('Unauthorized. Possible invalid credentials.', 401, 'Email or Password is null.');
       }
 
-      if (email && !ValidateEmail(email)) {
+      if (email && !validateEmail(email)) {
         throw new AppError('Unauthorized. Possible invalid credentials.', 401, 'Invalid email format.');
       }
 
@@ -125,7 +125,7 @@ export const UserResolvers = {
         throw new AppError('Register could not be done.', 400, 'Verify if all fields are filled with valid data.');
       }
 
-      if (!ValidateEmail(email)) {
+      if (!validateEmail(email)) {
         throw new AppError('Register could not be done.', 400, 'Verify if email field has a valid format.');
       }
 
@@ -135,19 +135,19 @@ export const UserResolvers = {
         throw new AppError('Register could not be done.', 401, 'Email already registred.');
       }
 
-      if (!ValidatePassword(input.password)) {
+      if (!validatePassword(input.password)) {
         throw new AppError(
           'Register could not be done.',
           400,
           'Verify if password field has a valid format. Min 7 characters, 1 letter and 1 number',
         );
       }
-      if (!ValidateCpf(cpf)) {
+      if (!validateCpf(cpf)) {
         throw new AppError('Register could not be done.', 400, 'Verify if cpf field has a valid format.');
       }
 
       const password = await hashProvider.generate(input.password);
-      const formattedCpf = FormatCpf(cpf);
+      const formattedCpf = formatCpf(cpf);
 
       const user = await usersRepository.save({
         birthDate,

@@ -1,4 +1,4 @@
-export { FormatCpf } from './format-cpf';
-export { ValidateCpf } from './validate-cpf';
-export { ValidateEmail } from './validate-email';
-export { ValidatePassword } from './validate-password';
+export { formatCpf } from './format-cpf';
+export { validateCpf } from './validate-cpf';
+export { validateEmail } from './validate-email';
+export { validatePassword } from './validate-password';

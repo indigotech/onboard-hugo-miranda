@@ -5,7 +5,7 @@ import { HashProvider } from 'src/typeorm/entities/users/providers/hash-provider
 import { User } from 'src/typeorm/entities/users/user-entity';
 import supertest from 'supertest';
 import { getRepository, Repository } from 'typeorm';
-import { FormatCpf } from 'src/utils';
+import { formatCpf } from 'src/utils';
 import { QueryUserLoginMutation, QueryUserRegisterMutation } from './request-builder';
 
 const baseURL = testConfig.baseURL;
@@ -23,7 +23,7 @@ describe('E2E GraphQL - User - Mutation:Register', () => {
     await usersRepository.save({
       ...sampleUsers[0],
       password,
-      cpf: FormatCpf(sampleUsers[0].cpf),
+      cpf: formatCpf(sampleUsers[0].cpf),
     });
 
     const loginRequest = QueryUserLoginMutation({
@@ -92,7 +92,7 @@ describe('E2E GraphQL - User - Mutation:Register', () => {
       id: body.data.register.user.id,
       name: sampleUsers[1].name,
       email: sampleUsers[1].email,
-      cpf: FormatCpf(sampleUsers[1].cpf),
+      cpf: formatCpf(sampleUsers[1].cpf),
       birthDate: sampleUsers[1].birthDate,
     });
     expect(count).to.be.eq(2);
@@ -100,7 +100,7 @@ describe('E2E GraphQL - User - Mutation:Register', () => {
       ...sampleUsers[1],
       id: Number(body.data.register.user.id),
       password: insertedUser.password,
-      cpf: FormatCpf(sampleUsers[1].cpf),
+      cpf: formatCpf(sampleUsers[1].cpf),
     });
     expect(validPassword).to.be.true;
   });

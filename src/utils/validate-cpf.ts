@@ -1,4 +1,4 @@
-export function ValidateCpf(cpf: string): boolean {
+export function validateCpf(cpf: string): boolean {
   // RegExp formats:
   // 123.456.789-01
   // 12345678901

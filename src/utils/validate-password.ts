@@ -1,4 +1,4 @@
-export function ValidatePassword(password: string): boolean {
+export function validatePassword(password: string): boolean {
   // RegExp needs:
   // at least 7 characters
   // at least 1 letter
