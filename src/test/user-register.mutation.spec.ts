@@ -75,7 +75,7 @@ describe('E2E GraphQL - User - Mutation:Register', () => {
     expect(body.errors[0].message).to.be.eq('Register could not be done.');
     expect(body.errors[0].extensions.exception.code).to.be.eq(400);
     expect(body.errors[0].extensions.exception.additionalInfo).to.be.eq(
-      'Verify if all fields is filled with valid data.',
+      'Verify if all fields are filled with valid data.',
     );
   });
 

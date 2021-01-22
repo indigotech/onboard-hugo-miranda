@@ -122,7 +122,7 @@ export const UserResolvers = {
       const usersRepository = getRepository(User);
 
       if (!name || !email || !cpf || !birthDate || !input.password) {
-        throw new AppError('Register could not be done.', 400, 'Verify if all fields is filled with valid data.');
+        throw new AppError('Register could not be done.', 400, 'Verify if all fields are filled with valid data.');
       }
 
       if (!ValidateEmail(email)) {
