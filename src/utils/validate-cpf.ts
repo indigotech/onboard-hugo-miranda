@@ -5,7 +5,5 @@ export function validateCpf(cpf: string): boolean {
 
   const cpfRegex = `([0-9]{2}[\.]?[0-9]{3}[\.]?[0-9]{3}[\/]?[0-9]{4}[-]?[0-9]{2})|([0-9]{3}[\.]?[0-9]{3}[\.]?[0-9]{3}[-]?[0-9]{2})`;
 
-  const isValid = new RegExp(cpfRegex).test(cpf.toLocaleLowerCase());
-
-  return isValid;
+  return new RegExp(cpfRegex).test(cpf.toLocaleLowerCase());
 }

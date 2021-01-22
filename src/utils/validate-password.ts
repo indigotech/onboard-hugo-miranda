@@ -6,7 +6,5 @@ export function validatePassword(password: string): boolean {
 
   const passwordRegex = `^(?=.*?[a-z])(?=.*?[0-9]).{7,}$`;
 
-  const isValid = new RegExp(passwordRegex).test(password.toLocaleLowerCase());
-
-  return isValid;
+  return new RegExp(passwordRegex).test(password.toLocaleLowerCase());
 }
