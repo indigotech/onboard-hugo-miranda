@@ -1,15 +1,14 @@
 import { connectDB } from 'src/typeorm';
-import { UserResolvers } from 'src/typeorm/entities/users/graphql';
-import { JWTProvider } from 'src/typeorm/entities/users/providers/jwt-provider/jwt-provider';
 import faker from 'faker';
+import { getRepository } from 'typeorm';
+import { User } from 'src/typeorm/entities/users/user-entity';
 
 export async function userSeeds(numOfUsersToAdd = 50): Promise<void> {
   try {
     await connectDB();
+    const users: User[] = [];
 
-    const jwtProvider: JWTProvider = new JWTProvider();
-    const token = jwtProvider.sign({ payload: {}, rememberMe: false });
-
+    const usersRepository = getRepository(User);
     for (let i = 0; i < numOfUsersToAdd; i++) {
       const userData = {
         name: faker.name.findName(),
@@ -19,14 +18,9 @@ export async function userSeeds(numOfUsersToAdd = 50): Promise<void> {
         birthDate: `01/01/2000`,
       };
 
-      await UserResolvers.Mutation.register(
-        {},
-        {
-          input: userData,
-        },
-        { token: `Bearer ${token}` },
-      );
+      users.push(usersRepository.create(userData));
     }
+    await usersRepository.save(users);
 
     console.log(`${numOfUsersToAdd} users added to database!`);
   } catch (error) {
