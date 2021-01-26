@@ -12,8 +12,8 @@ export async function userSeeds(numOfUsersToAdd = 50): Promise<void> {
 
     for (let i = 0; i < numOfUsersToAdd; i++) {
       const userData = {
-        name: `${faker.name.findName()}`,
-        email: `${faker.internet.email()}`,
+        name: faker.name.findName(),
+        email: faker.internet.email(),
         password: `passw0rd`,
         cpf: `12345678900`,
         birthDate: `01/01/2000`,
