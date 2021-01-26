@@ -4,6 +4,7 @@ import { connectDB } from './typeorm';
 import { ApolloServer, gql } from 'apollo-server';
 import { UserResolvers, UserTypeDefs } from './typeorm/entities/users/graphql';
 import { Environments, SelectedEnv } from '@config/env';
+import { JWTProvider } from './typeorm/entities/users/providers/jwt-provider/jwt-provider';
 
 export async function runServer(): Promise<void> {
   await connectDB();
@@ -11,6 +12,9 @@ export async function runServer(): Promise<void> {
   const helloTypeDefs = gql`
     type Query {
       hello: String
+    }
+    type Mutation {
+      _empty: String
     }
   `;
 
@@ -22,11 +26,25 @@ export async function runServer(): Promise<void> {
     },
   };
 
-  const typeDefs = [helloTypeDefs, UserTypeDefs];
+  const typeDefs = [helloTypeDefs, ...UserTypeDefs];
 
   const resolvers = [helloResolvers, UserResolvers];
 
-  const server = new ApolloServer({ typeDefs, resolvers });
+  const server = new ApolloServer({
+    typeDefs,
+    resolvers,
+    context: async ({ req }) => {
+      let decodedToken;
+      if (req.headers.authorization) {
+        const [, token] = req.headers.authorization.split(' ') || '';
+        const jwtProvider = new JWTProvider();
+
+        decodedToken = await jwtProvider.verify(token);
+      }
+
+      return { token: decodedToken };
+    },
+  });
 
   try {
     const { url } = await server.listen({ port: process.env.SERVER_PORT });
