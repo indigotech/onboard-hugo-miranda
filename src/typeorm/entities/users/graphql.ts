@@ -1,5 +1,12 @@
 import { gql } from 'apollo-server';
-import { UserLoginMutationTypeDefs, UserRegisterMutationTypeDefs, register, login } from './graphql/';
+import {
+  UserLoginMutationTypeDefs,
+  UserRegisterMutationTypeDefs,
+  UserSearchQueryTypeDefs,
+  register,
+  login,
+  search,
+} from './graphql/';
 
 const UserType = gql`
   type User {
@@ -11,9 +18,17 @@ const UserType = gql`
   }
 `;
 
-export const UserTypeDefs = [UserType, UserRegisterMutationTypeDefs, UserLoginMutationTypeDefs];
+export const UserTypeDefs = [
+  UserType,
+  UserRegisterMutationTypeDefs,
+  UserLoginMutationTypeDefs,
+  UserSearchQueryTypeDefs,
+];
 
 export const UserResolvers = {
+  Query: {
+    search,
+  },
   Mutation: {
     register,
     login,
