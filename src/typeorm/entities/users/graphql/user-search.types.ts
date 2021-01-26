@@ -10,6 +10,6 @@ export const UserSearchQueryTypeDefs = gql`
   }
 
   extend type Query {
-    userSearch(input: UserSearchInput!): UserSearchResponse
+    search(input: UserSearchInput!): UserSearchResponse
   }
 `;

@@ -32,7 +32,7 @@ describe('E2E GraphQL - User - Query:Search', () => {
     const request = QueryUserSearchQuery({ id: insertedUser.id });
     const { body } = await supertest(baseURL).post('').send(request);
 
-    expect(body.data.userSearch.user).to.be.deep.equal({
+    expect(body.data.search.user).to.be.deep.equal({
       id: insertedUser.id.toString(),
       name: sampleUsers[0].name,
       email: sampleUsers[0].email,

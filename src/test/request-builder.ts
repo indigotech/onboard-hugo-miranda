@@ -64,8 +64,8 @@ export const QueryUserRegisterMutation = (input: IUserRegisterRequest): IRequest
 
 export const QueryUserSearchQuery = (input: IUserSearchRequest): IRequestBuilderResponse => {
   return {
-    query: `query userSearch ($input: UserSearchInput!){
-      userSearch(input: $input){
+    query: `query search ($input: UserSearchInput!){
+      search(input: $input){
         user{
           id
           name
