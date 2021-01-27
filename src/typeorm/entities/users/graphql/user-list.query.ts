@@ -36,7 +36,7 @@ export const list = async (_, { input }: UserListParams, context): Promise<UserL
     throw new AppError('Cannot find this page.', 404, `Page ${page} exceeds the page limit (${pages}).`);
   }
   if (page < 0) {
-    throw new AppError('Cannot find this page.', 404, `Page cannot be negative.`);
+    throw new AppError('Cannot find this page.', 400, `Page cannot be negative.`);
   }
 
   const users = await usersRepository.find({
@@ -45,9 +45,8 @@ export const list = async (_, { input }: UserListParams, context): Promise<UserL
     order: { name: 'ASC' },
   });
 
-  console.log(users.length);
   if (!users) {
-    throw new AppError('Cannot find this users', 404, `Users could not be found.`);
+    throw new AppError('Cannot find users', 404, `Users could not be found.`);
   }
 
   const info = {
@@ -56,6 +55,5 @@ export const list = async (_, { input }: UserListParams, context): Promise<UserL
     page,
   };
 
-  console.log(info);
   return { info, users };
 };

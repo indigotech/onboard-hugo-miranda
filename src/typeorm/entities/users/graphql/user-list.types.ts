@@ -2,7 +2,7 @@ import { gql } from 'apollo-server';
 
 export const UserListQueryTypeDefs = gql`
   input UserListInput {
-    limit: Int!
+    limit: Int
     page: Int
   }
 
