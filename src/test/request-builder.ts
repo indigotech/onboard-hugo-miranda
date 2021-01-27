@@ -23,6 +23,11 @@ interface IUserSearchRequest {
   id: number;
 }
 
+interface IUserListRequest {
+  limit?: number;
+  page?: number;
+}
+
 export const QueryUserLoginMutation = (input: IUserLoginRequest): IRequestBuilderResponse => {
   return {
     query: `mutation login ($input: UserLoginInput! ) {
@@ -72,6 +77,30 @@ export const QueryUserSearchQuery = (input: IUserSearchRequest): IRequestBuilder
           email
           cpf
           birthDate
+        }
+      }
+    }`,
+    variables: {
+      input,
+    },
+  };
+};
+
+export const QueryUserListQuery = (input: IUserListRequest): IRequestBuilderResponse => {
+  return {
+    query: `query list ($input: UserListInput!) {
+      list(input: $input) {
+        info{
+          limit
+          page
+          pages
+        }
+        users {
+          id
+          name
+          email
+          birthDate
+          cpf
         }
       }
     }`,

@@ -29,3 +29,4 @@ require('./user-login.mutation.spec');
 require('./user-login-jwt.spec');
 require('./user-register.mutation.spec');
 require('./user-search.query.spec');
+require('./user-list.query.spec');
