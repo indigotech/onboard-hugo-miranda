@@ -3,9 +3,11 @@ import {
   UserLoginMutationTypeDefs,
   UserRegisterMutationTypeDefs,
   UserSearchQueryTypeDefs,
+  UserListQueryTypeDefs,
   register,
   login,
   search,
+  list,
 } from './graphql/';
 
 const UserType = gql`
@@ -23,11 +25,13 @@ export const UserTypeDefs = [
   UserRegisterMutationTypeDefs,
   UserLoginMutationTypeDefs,
   UserSearchQueryTypeDefs,
+  UserListQueryTypeDefs,
 ];
 
 export const UserResolvers = {
   Query: {
     search,
+    list,
   },
   Mutation: {
     register,
