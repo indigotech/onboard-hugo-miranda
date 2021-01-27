@@ -11,9 +11,12 @@ export async function userSeeds(numOfUsersToAdd = 50): Promise<void> {
     const usersRepository = getRepository(User);
     for (let i = 0; i < numOfUsersToAdd; i++) {
       const password = await hashProvider.generate(`passw0rd`);
+      const firstName = faker.name.firstName();
+      const lastName = faker.name.lastName();
+      const name = `${firstName} ${lastName}`;
       const userData = {
-        name: faker.name.findName(),
-        email: faker.internet.email(),
+        name,
+        email: faker.internet.email(firstName, lastName),
         password,
         cpf: `12345678900`,
         birthDate: `01/01/2000`,
@@ -22,8 +25,6 @@ export async function userSeeds(numOfUsersToAdd = 50): Promise<void> {
       users.push(usersRepository.create(userData));
     }
     await usersRepository.save(users);
-
-    console.log(`${numOfUsersToAdd} users added to database!`);
   } catch (error) {
     console.log(error);
   }
