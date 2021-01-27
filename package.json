@@ -11,8 +11,8 @@
       "test": "ENV=TEST mocha -r ts-node/register -r tsconfig-paths/register --colors src/test/index.spec.ts --exit",
       "dev": "ENV=DEV nodemon -r tsconfig-paths/register -w src --ext ts --exec ts-node src/server.ts",
       "typeorm": "ts-node ./node_modules/typeorm/cli.js",
-      "seeds": "ts-node -r tsconfig-paths/register src/db/run.seeds.ts",
-      "test:seeds": "ENV=TEST ts-node -r tsconfig-paths/register src/db/run.seeds.ts",
+      "seeds": "ts-node -r tsconfig-paths/register src/db/seeds.ts",
+      "test:seeds": "ENV=TEST ts-node -r tsconfig-paths/register src/db/seeds.ts",
       "eslint:verify": "yarn eslint ./src/**"
    },
    "dependencies": {
